@@ -3,7 +3,7 @@ package com.project.ecommmerce_2.Response;
 import com.project.ecommmerce_2.Model.RegisterModel;
 
 public class RegisterResponse {
-    private String pesan, token, otp;
+    private String pesan, token;
     private int status;
     private RegisterModel data;
 
@@ -39,11 +39,4 @@ public class RegisterResponse {
         this.data = data;
     }
 
-    public String getOtp() {
-        return otp;
-    }
-
-    public void setOtp(String otp) {
-        this.otp = otp;
-    }
 }

@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.project.ecommmerce_2.Cart.CartFragment;
+import com.project.ecommmerce_2.Category.CategoryFragment;
 import com.project.ecommmerce_2.Database.Repository.ProductRepository;
 import com.project.ecommmerce_2.Home.HomeFragment;
 import com.project.ecommmerce_2.User.UserFragment;
@@ -34,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
         meowBottomNavigation = bind.meownav;
 
         meowBottomNavigation.add(new MeowBottomNavigation.Model(1, R.drawable.ic_home));
-        meowBottomNavigation.add(new MeowBottomNavigation.Model(2, R.drawable.ic_cart));
-        meowBottomNavigation.add(new MeowBottomNavigation.Model(3, R.drawable.ic_account));
+        meowBottomNavigation.add(new MeowBottomNavigation.Model(2, R.drawable.ic_category));
+        meowBottomNavigation.add(new MeowBottomNavigation.Model(3, R.drawable.ic_cart));
+        meowBottomNavigation.add(new MeowBottomNavigation.Model(4, R.drawable.ic_account));
 
         meowBottomNavigation.show(1, true);
         meowBottomNavigation.setOnShowListener(new Function1<MeowBottomNavigation.Model, Unit>() {
@@ -46,9 +48,12 @@ public class MainActivity extends AppCompatActivity {
                         replace(new HomeFragment());
                         break;
                     case 2:
-                        replace(new CartFragment());
+                        replace(new CategoryFragment());
                         break;
                     case 3 :
+                        replace(new CartFragment());
+                        break;
+                    case 4 :
                         replace(new UserFragment());
                         break;
                 }

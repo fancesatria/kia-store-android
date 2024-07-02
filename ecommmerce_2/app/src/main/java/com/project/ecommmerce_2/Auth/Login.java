@@ -17,7 +17,10 @@ import com.project.ecommmerce_2.MainActivity;
 import com.project.ecommmerce_2.Model.LoginModel;
 import com.project.ecommmerce_2.R;
 import com.project.ecommmerce_2.Response.LoginResponse;
+import com.project.ecommmerce_2.User.PersonalInformation;
 import com.project.ecommmerce_2.databinding.ActivityLoginBinding;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,12 +60,13 @@ public class Login extends AppCompatActivity {
                     sp.setEmail(response.body().getData().getEmail());
                     sp.setUsername(response.body().getData().getName());
                     sp.setIdPengguna(response.body().getData().getId());
-                    SuccessDialog.message(Login.this, "Login berhasil", bind.getRoot());
+//                    SuccessDialog.message(Login.this, "Login berhasil", bind.getRoot());
 
                     startActivity(new Intent(Login.this, MainActivity.class));
                     finish();
 
                 } else {
+
                     ErrorDialog.message(Login.this, "Akun tidak ditemukan, periksa kembali password anda", bind.getRoot());
                 }
 //                Toast.makeText(Login.this, String.valueOf(response), Toast.LENGTH_SHORT).show();
@@ -71,7 +75,8 @@ public class Login extends AppCompatActivity {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 LoadingDialog.close();
-                Toast.makeText(Login.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                ErrorDialog.message(Login.this, getString(R.string.trouble), bind.getRoot());
+//                Toast.makeText(Login.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

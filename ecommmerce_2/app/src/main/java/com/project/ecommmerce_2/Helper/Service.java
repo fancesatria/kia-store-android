@@ -1,9 +1,11 @@
 package com.project.ecommmerce_2.Helper;
 
+import com.project.ecommmerce_2.Model.CategoryModel;
 import com.project.ecommmerce_2.Model.LoginModel;
 import com.project.ecommmerce_2.Model.OrderModel;
 import com.project.ecommmerce_2.Model.PaymentModel;
 import com.project.ecommmerce_2.Model.ProductModel;
+import com.project.ecommmerce_2.Model.ProfileModel;
 import com.project.ecommmerce_2.Model.RegisterModel;
 import com.project.ecommmerce_2.RajaOngkir.DataProcessing.city.CityResponse;
 import com.project.ecommmerce_2.RajaOngkir.DataProcessing.cost.CostResponse;
@@ -25,36 +27,62 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface Service {
-    //AUTH
+    //AUTH +++++++++++++++++++++++++++++++++++
     @POST("custom-login_api")
     Call<LoginResponse> login(@Body LoginModel loginModel);
     @POST("custom-registration_api")
     Call<RegisterResponse> register(@Body RegisterModel registerModel);
 
-    //Product
+
+
+    //PROFILE +++++++++++++++++++++++++++++++++++
+    @GET("profile_api/{id}")
+    Call<List<ProfileModel>> getProfile(@Path("id") int id);
+    @POST("profile_api/update/{id}")
+    Call<ProfileModel> updateProfile(@Path("id") int  id, @Body ProfileModel profileModel);
+
+
+
+    //PRODUCT +++++++++++++++++++++++++++++++++++
     @GET("barangs_api")//get
     Call<List<ProductModel>> getDataProduct();
-
     @GET("barangs_api")//get
     Call<List<ProductModel>> getDataProduct(@Query("search") String search);
-
     @GET("barangs_api/{id}")
     Call<List<ProductModel>> getDataProduct(@Path("id") int id);
 
-    //Order
+
+    //CATEGORY +++++++++++++++++++++++++++++++++++
+    @GET("kategori")
+    Call<List<CategoryModel>> getCategories();
+    @GET("kategori/{id}")
+    Call<List<ProductModel>> getProductsByCategory(@Path("id") int categoryId);
+
+
+
+    //ORDER +++++++++++++++++++++++++++++++++++
     @GET("orders_api/user/{id}") // Index order
     Call<List<OrderModel>> getDataOrder(@Path("id") int id);
-
     @GET("orders/detail/{snap_token}") // Order detail
     Call<OrderDetailResponse> getOrderDetails(@Path("snap_token") String snapToken);
-
     @POST("orders/update_status/{snap_token}") // Update status
     Call<Void> updateStatus(@Path("snap_token") String snap_token);
-
     @POST("orders") // Create order
     Call<PaymentResponse> createPayment(@Body PaymentModel paymentModel);
 
-    // Raja Ongkir
+
+    //ORDER FILTER +++++++++++++++++++++++++++++++++++
+    @GET("orders/filter/belum-bayars/{id}")
+    Call<List<OrderModel>> getUnpaid(@Path("id") int id);
+    @GET("orders/filter/sudah-bayar/{id}")//get
+    Call<List<OrderModel>> getPaid(@Path("id") int id);
+    @GET("orders/filter/dikirim/{id}")//get
+    Call<List<OrderModel>> getShipped(@Path("id") int id);
+    @GET("orders/filter/selesai/{id}")//get
+    Call<List<OrderModel>> getFinished(@Path("id") int id);
+
+
+    // RAJA ONGKIR +++++++++++++++++++++++++++++++++++
     @GET("city")
     Single<CityResponse> getCity();
     @FormUrlEncoded

@@ -11,13 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.project.ecommmerce_2.Component.ErrorDialog;
 import com.project.ecommmerce_2.Component.LoadingDialog;
 import com.project.ecommmerce_2.Component.SuccessDialog;
-import com.project.ecommmerce_2.Detail;
 import com.project.ecommmerce_2.Helper.API;
 import com.project.ecommmerce_2.Helper.SPHelper;
 import com.project.ecommmerce_2.MainActivity;
 import com.project.ecommmerce_2.Model.RegisterModel;
 import com.project.ecommmerce_2.R;
 import com.project.ecommmerce_2.Response.RegisterResponse;
+import com.project.ecommmerce_2.User.PersonalInformation;
 import com.project.ecommmerce_2.databinding.ActivityRegisterBinding;
 
 import retrofit2.Call;
@@ -41,24 +41,57 @@ public class Register extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
-        bind.btnNext.setOnClickListener(new View.OnClickListener() {
+    public void buatAkun(View view) {
+        SPHelper sp = new SPHelper(Register.this);
+        if (validasi()){
+
+        } else {
+            RegisterModel rg = new RegisterModel();
+            rg.setEmail(bind.email.getText().toString());
+            rg.setPassword(bind.password.getText().toString());
+            rg.setName(bind.username.getText().toString());
+            prosesBuatAkun(rg);
+
+        }
+    }
+
+    public void prosesBuatAkun(RegisterModel registerModel){
+        LoadingDialog.load(Register.this);
+        SPHelper sp = new SPHelper(Register.this);
+        Call<RegisterResponse> registerResponseCall = API.getRetrofit().register(registerModel);
+        registerResponseCall.enqueue(new Callback<RegisterResponse>() {
             @Override
-            public void onClick(View v) {
-                if (validasi()){
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+                LoadingDialog.close();
+                if (response.isSuccessful()){
+                    //simpan token dan username
+                    sp.setToken(response.body().getToken());
+                    sp.setEmail(response.body().getData().getEmail());
+                    sp.setUsername(response.body().getData().getName());
+                    sp.setIdPengguna(response.body().getData().getId());
+
+                    SuccessDialog.message(Register.this, "Akun berhasil dibuat", bind.getRoot());
+
+                    startActivity(new Intent(Register.this, MainActivity.class));
+                    finish();
 
                 } else {
-                    Intent i = new Intent(Register.this, PersonalInformationRegister.class);
-                    i.putExtra("username", bind.email.getText().toString());
-                    i.putExtra("email", bind.email.getText().toString());
-                    i.putExtra("password", bind.password.getText().toString());
-                    startActivity(i);
+                    ErrorDialog.message(Register.this, "Tidak dapat membuat akun", bind.getRoot());
+                    Toast.makeText(Register.this, String.valueOf(response), Toast.LENGTH_LONG).show();
                 }
+//                Toast.makeText(Register.this, String.valueOf(response), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                LoadingDialog.close();
+                ErrorDialog.message(Register.this, getString(R.string.trouble), bind.getRoot());
+//                Toast.makeText(Register.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-
-
 
     public boolean validasi() {
         etEmail = bind.email;
@@ -83,8 +116,8 @@ public class Register extends AppCompatActivity {
         } else if (!etEmail.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) {
             ErrorDialog.message(Register.this, getString(R.string.is_email), bind.getRoot());
             return true;
-        } else if(etPassword.getText().toString().length() < 8 || etConfirm.getText().toString().length() < 8){
-            ErrorDialog.message(Register.this, "Password harus terdisi dari minimal 8 digit, angka, dan karakter", bind.getRoot());
+        } else if(etPassword.getText().toString().length() < 8 || etConfirm.getText().toString().length() < 6){
+            ErrorDialog.message(Register.this, "Password harus terdisi dari minimal 6 digit, angka, dan karakter", bind.getRoot());
             return true;
         } else {
             Toast.makeText(this, "Harap tunggu...", Toast.LENGTH_SHORT).show();

@@ -12,19 +12,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_margin="16dp"
-            android:max="100"
-            android:progress="100"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:fontFamily="sans-serif-black"
-                    android:text="Informasi Personal"
+                    android:text="INFORMASI PERSONAL"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
                     android:textSize="20dp" />
@@ -103,13 +90,47 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:hint="Kota Tujuan"
+                    android:hint="Kota/Kabupaten"
                     app:hintEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputKotaTujuan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="Provinsi"
+                    app:hintEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/province"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="Kecamatan"
+                    app:hintEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/kecamatan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -135,7 +156,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:hint="Alamaat"
+                    android:hint="Alamat"
                     app:hintEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -143,6 +164,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
+                        android:maxLines="2"
                         />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -192,62 +214,25 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
                 <Button
-                    android:id="@+id/btnNext"
+                    android:id="@+id/btnEdit"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:backgroundTint="@color/black"
-                    android:onClick="buatAkun"
-                    android:text="Selanjutnya"
+                    android:onClick="btnEdit"
+                    android:text="Edit"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp" />
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/btnSubmit"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/txtRegister"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:text="Sudah memiliki akun ?"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/login"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="login"
-                        android:text="Masuk"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
-                </LinearLayout>
-
-
-                <TextView
-                    android:id="@+id/beta"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="tester"
-                    android:text="Tester"
-                    android:textAlignment="center"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/homePage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="mainPage"
-                    android:text="Home Page"
-                    android:textAlignment="center"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:layout_height="55dp"
+                    android:backgroundTint="@color/black"
+                    android:onClick="btnSubmit"
+                    android:text="Simpan Perubahan"
+                    android:textColor="#FFFFFF"
+                    android:visibility="gone"
+                    android:textSize="15sp" />
             </LinearLayout>
 
 

@@ -201,4 +201,10 @@ public class HomeFragment extends Fragment {
                 .setNegativeButton("Tidak", null)
                 .show();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchData();
+    }
 }

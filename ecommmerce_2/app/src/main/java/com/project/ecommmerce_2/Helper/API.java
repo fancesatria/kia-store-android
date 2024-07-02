@@ -105,7 +105,7 @@ public class API {
         OkHttpClient client = builder.build();
         if (retrofits == null) {
             retrofits = new Retrofit.Builder()
-                    .baseUrl("https://api.rajaongkir.com/starter/")
+                    .baseUrl(RAJAONGKIR_URL)
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

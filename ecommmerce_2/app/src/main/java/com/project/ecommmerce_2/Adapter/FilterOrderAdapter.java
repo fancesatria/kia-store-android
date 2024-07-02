@@ -1,5 +1,7 @@
 package com.project.ecommmerce_2.Adapter;
 
+import static com.project.ecommmerce_2.User.UnpaidOrder.*;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -10,23 +12,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.ecommmerce_2.Helper.Modul;
 import com.project.ecommmerce_2.Model.OrderModel;
 import com.project.ecommmerce_2.R;
 import com.project.ecommmerce_2.Transaction.DetailOrder;
-import com.project.ecommmerce_2.User.Order;
+import com.project.ecommmerce_2.User.UnpaidOrder;
 
 import java.text.ParseException;
 import java.util.List;
 
-public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
+public class FilterOrderAdapter extends RecyclerView.Adapter<FilterOrderAdapter.ViewHolder>{
     private Context context;
     private List<OrderModel> data;
 
-    public OrderAdapter(Context context, List<OrderModel> data) {
+    public FilterOrderAdapter(Context contex, List<OrderModel> data) {
         this.context = context;
         this.data = data;
     }
@@ -41,22 +42,21 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OrderModel orderModel = data.get(position);
+
+
         holder.nama.setText(orderModel.getNama());
-        holder.status.setText(orderModel.getStatus());
         holder.total.setText("Rp. "+ Modul.numberFormat(String.valueOf(Integer.valueOf(orderModel.getTotal_harga()))));
 
-        if (!orderModel.getStatus().equalsIgnoreCase("Belum Bayar")) {
-            holder.status.setBackgroundResource(R.drawable.background_status_teal);
-            holder.btnBayar.setVisibility(View.GONE);
-        } else {
+        if (orderModel.getStatus().equalsIgnoreCase("Belum Bayar")) {
             holder.status.setBackgroundResource(R.drawable.backgound_status_maroon);
+            holder.status.setText(orderModel.getStatus());
             holder.btnBayar.setVisibility(View.GONE);
         }
 
         holder.btnBayar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((Order) context).updateStatus(orderModel.getSnap_token(), context);
+                ((UnpaidOrder) context).updateStatus(orderModel.getSnap_token(), context);
             }
         });
 

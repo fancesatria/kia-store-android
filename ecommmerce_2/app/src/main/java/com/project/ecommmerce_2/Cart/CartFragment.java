@@ -20,14 +20,17 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.project.ecommmerce_2.Adapter.CartAdapter;
 import com.project.ecommmerce_2.Auth.Login;
+import com.project.ecommmerce_2.Component.ErrorDialog;
 import com.project.ecommmerce_2.Component.LoadingDialog;
 import com.project.ecommmerce_2.Helper.API;
 import com.project.ecommmerce_2.Helper.Modul;
 import com.project.ecommmerce_2.Helper.SPHelper;
 import com.project.ecommmerce_2.Model.CartItem;
 import com.project.ecommmerce_2.Model.PaymentModel;
+import com.project.ecommmerce_2.R;
 import com.project.ecommmerce_2.Response.PaymentResponse;
 import com.project.ecommmerce_2.Transaction.Payment;
+import com.project.ecommmerce_2.User.PersonalInformation;
 import com.project.ecommmerce_2.databinding.FragmentCartBinding;
 
 import java.lang.reflect.Type;
@@ -198,7 +201,8 @@ public class CartFragment extends Fragment implements CartAdapter.CartUpdateList
             public void onFailure(Call<PaymentResponse> call, Throwable t) {
                 LoadingDialog.close();
                 Log.e(TAG, "Error: " + t.getMessage(), t);
-                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                ErrorDialog.message(getContext(), getString(R.string.trouble), binding.getRoot());
+//                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

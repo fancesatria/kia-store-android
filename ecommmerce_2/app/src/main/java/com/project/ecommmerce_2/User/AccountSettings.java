@@ -14,5 +14,8 @@ public class AccountSettings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         bind = ActivityAccountSettingsBinding.inflate(getLayoutInflater());
         setContentView(bind.getRoot());
+
+
     }
+
 }

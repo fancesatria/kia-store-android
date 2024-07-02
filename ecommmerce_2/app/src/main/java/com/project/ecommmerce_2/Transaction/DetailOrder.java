@@ -18,6 +18,7 @@ import com.project.ecommmerce_2.Helper.Modul;
 import com.project.ecommmerce_2.Model.OrderDetailModel;
 import com.project.ecommmerce_2.R;
 import com.project.ecommmerce_2.Response.OrderDetailResponse;
+import com.project.ecommmerce_2.User.PersonalInformation;
 import com.project.ecommmerce_2.databinding.ActivityDetailOrderBinding;
 
 import java.util.ArrayList;
@@ -102,7 +103,8 @@ public class DetailOrder extends AppCompatActivity {
             @Override
             public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
                 LoadingDialog.close();
-                Toast.makeText(DetailOrder.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                ErrorDialog.message(DetailOrder.this, getString(R.string.trouble), bind.getRoot());
+//                Toast.makeText(DetailOrder.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
