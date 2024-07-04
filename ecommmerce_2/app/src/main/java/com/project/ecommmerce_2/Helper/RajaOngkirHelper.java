@@ -8,7 +8,7 @@ public class RajaOngkirHelper {
     public static String source_province_id = "";
     public static String source_province_name = "";
 
-    public static String source_city_id = "501";
+    public static String source_city_id = "500";
     public static String source_city_name = "";
 
 }

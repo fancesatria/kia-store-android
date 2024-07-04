@@ -19,7 +19,7 @@ import com.project.ecommmerce_2.databinding.ItemProductBinding;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
-    Context context;
+    private Context context;
     private List<ProductModel> data;
 
     public ProductAdapter(Context context, List<ProductModel> data) {

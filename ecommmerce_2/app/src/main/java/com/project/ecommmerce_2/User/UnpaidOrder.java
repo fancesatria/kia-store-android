@@ -78,40 +78,40 @@ public class UnpaidOrder extends AppCompatActivity {
     }
 
 
-    public void updateStatus(String snap_token, Context context) {
-        if (context == null) {
-            return; // Exit if the context is not available
-        }
-        new AlertDialog.Builder(context)
-                .setTitle("Konfirmasi")
-                .setMessage("Update status pembayaran?")
-                .setPositiveButton("Iya", (dialog, which) -> {
-                    LoadingDialog.load(context);
-                    Call<Void> call = API.getRetrofit(context).updateStatus(snap_token);
-                    call.enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            LoadingDialog.close();
-                            if (response.isSuccessful()) {
-                                SuccessDialog.message(context, context.getString(R.string.saved), bind.getRoot());
-                                fetchData(); // Assuming fetchData() is a method in your fragment/activity
-                            } else {
-                                ErrorDialog.message(context, context.getString(R.string.unsaved), bind.getRoot());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            LoadingDialog.close();
-                            Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                })
-                .setNegativeButton("Tidak", (dialog, which) -> {
-
-                })
-                .show();
-    }
+//    public void updateStatus(String snap_token, Context context) {
+//        if (context == null) {
+//            return; // Exit if the context is not available
+//        }
+//        new AlertDialog.Builder(context)
+//                .setTitle("Konfirmasi")
+//                .setMessage("Update status pembayaran?")
+//                .setPositiveButton("Iya", (dialog, which) -> {
+//                    LoadingDialog.load(context);
+//                    Call<Void> call = API.getRetrofit(context).updateStatus(snap_token);
+//                    call.enqueue(new Callback<Void>() {
+//                        @Override
+//                        public void onResponse(Call<Void> call, Response<Void> response) {
+//                            LoadingDialog.close();
+//                            if (response.isSuccessful()) {
+//                                SuccessDialog.message(context, context.getString(R.string.saved), bind.getRoot());
+//                                fetchData(); // Assuming fetchData() is a method in your fragment/activity
+//                            } else {
+//                                ErrorDialog.message(context, context.getString(R.string.unsaved), bind.getRoot());
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<Void> call, Throwable t) {
+//                            LoadingDialog.close();
+//                            Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                })
+//                .setNegativeButton("Tidak", (dialog, which) -> {
+//
+//                })
+//                .show();
+//    }
 
     @Override
     protected void onResume() {

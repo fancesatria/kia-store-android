@@ -17,13 +17,19 @@
     <string name="is_email">Masukkan email yang valid</string>
     <string name="trouble">Terjadi kesalahan</string>
 
+    <string name="payment_failed">Pembayaran gagal</string>
+    <string name="payment_unable">Pembayaran tidak dapat dilakukan</string>
+    <string name="payment_success">Pembayaran berhasil</string>
+
+    <string name="no_selected">Tak ada data yang dipilih</string>
+
     <string name="pw_success">Password berhasil diubah</string>
     <string name="pw_failed">Password gagal diubah</string>
     <string name="no_data">Tak ada data untuk ditampilkan</string>
 
     <string name="empty">Data tak boleh kosong</string>
     <string name="del_ensure">Anda akan menghapus data ini ?</string>
-    <string name="logout_ensure">Anda akan keluar dan menghapus data aplikasi ini ?</string>
+    <string name="logout_ensure">Ingin keluar?</string>
     <string name="title_activity_detail_event">DetailEventActivity</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

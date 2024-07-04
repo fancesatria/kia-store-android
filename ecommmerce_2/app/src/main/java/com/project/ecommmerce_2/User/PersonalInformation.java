@@ -173,7 +173,6 @@ public class PersonalInformation extends AppCompatActivity {
 
                 } else {
                     ErrorDialog.message(PersonalInformation.this, getString(R.string.unsaved), bind.getRoot());
-                    Toast.makeText(PersonalInformation.this, String.valueOf(response), Toast.LENGTH_LONG).show();
                 }
 //                Toast.makeText(Register.this, String.valueOf(response), Toast.LENGTH_SHORT).show();
             }
@@ -182,7 +181,6 @@ public class PersonalInformation extends AppCompatActivity {
             public void onFailure(Call<ProfileModel> call, Throwable t) {
                 LoadingDialog.close();
                 ErrorDialog.message(PersonalInformation.this, getString(R.string.trouble), bind.getRoot());
-                Toast.makeText(PersonalInformation.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

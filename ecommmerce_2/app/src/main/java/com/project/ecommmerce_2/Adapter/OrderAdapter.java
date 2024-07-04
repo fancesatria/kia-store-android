@@ -48,6 +48,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
         if (!orderModel.getStatus().equalsIgnoreCase("Belum Bayar")) {
             holder.status.setBackgroundResource(R.drawable.background_status_teal);
             holder.btnBayar.setVisibility(View.GONE);
+
+            if (orderModel.getStatus().equalsIgnoreCase("Sudah Bayar")){
+                holder.status.setText("Diproses");
+            }
         } else {
             holder.status.setBackgroundResource(R.drawable.backgound_status_maroon);
             holder.btnBayar.setVisibility(View.GONE);

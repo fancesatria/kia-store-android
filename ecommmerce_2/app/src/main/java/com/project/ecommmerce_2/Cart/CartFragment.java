@@ -29,6 +29,7 @@ import com.project.ecommmerce_2.Model.CartItem;
 import com.project.ecommmerce_2.Model.PaymentModel;
 import com.project.ecommmerce_2.R;
 import com.project.ecommmerce_2.Response.PaymentResponse;
+import com.project.ecommmerce_2.Transaction.Checkout;
 import com.project.ecommmerce_2.Transaction.Payment;
 import com.project.ecommmerce_2.User.PersonalInformation;
 import com.project.ecommmerce_2.databinding.FragmentCartBinding;
@@ -58,12 +59,6 @@ public class CartFragment extends Fragment implements CartAdapter.CartUpdateList
 
         initCart();
         setupCheckoutButton();
-        binding.logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                logout();
-            }
-        });
 
         return binding.getRoot();
     }
@@ -90,9 +85,13 @@ public class CartFragment extends Fragment implements CartAdapter.CartUpdateList
                         if (!selectedItems.isEmpty()) {
 //                            Toast.makeText(getContext(), selectedItemsInfo.toString(), Toast.LENGTH_LONG).show();
 
-                            createPaymentRequest(selectedItems);
+                            // createPaymentRequest(selectedItems);
+                            Intent i = new Intent(getContext(), Checkout.class);
+                            i.putExtra("selectedItems", new ArrayList<>(selectedItems));
+                            i.putExtra("total_price", totalPrice);
+                            startActivity(i);
                         } else {
-                            Toast.makeText(getContext(), "Tidak ada item yang dipilih", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getString(R.string.no_selected), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
@@ -158,73 +157,4 @@ public class CartFragment extends Fragment implements CartAdapter.CartUpdateList
         updateTotalPriceAndCheckoutButton();
     }
 
-    private void createPaymentRequest(List<CartItem> selectedItems) {
-        LoadingDialog.load(getContext());
-
-        List<PaymentModel.Item> items = new ArrayList<>();
-        for (CartItem item : selectedItems) {
-            items.add(new PaymentModel.Item(String.valueOf(item.getId()), String.valueOf(item.getQuantity())));
-        }
-
-        PaymentModel paymentModel = new PaymentModel(spHelper.getIdPengguna(), items);
-
-        // Debugging step to check JSON conversion
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(paymentModel);
-        Log.d(TAG, "PaymentModel JSON: " + jsonString);
-
-        Call<PaymentResponse> call = API.getRetrofit(getContext()).createPayment(paymentModel);
-        call.enqueue(new Callback<PaymentResponse>() {
-            @Override
-            public void onResponse(Call<PaymentResponse> call, Response<PaymentResponse> response) {
-                LoadingDialog.close();
-                if (response.isSuccessful() && response.body() != null) {
-                    PaymentResponse paymentResponse = response.body();
-                    if (paymentResponse.isSuccess()) {
-                        String snapToken = paymentResponse.getSnap_token();
-
-                        Intent intent = new Intent(getContext(), Payment.class);
-                        intent.putExtra("snap_token", snapToken);
-                        intent.putExtra("total_price", totalPrice);
-                        startActivity(intent);
-                    } else {
-                        Log.e(TAG, "Payment failed: " + paymentResponse.getMessage());
-                        Toast.makeText(getContext(), paymentResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Log.e(TAG, "Response not successful: " + response.message());
-                    Toast.makeText(getContext(), response+"", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PaymentResponse> call, Throwable t) {
-                LoadingDialog.close();
-                Log.e(TAG, "Error: " + t.getMessage(), t);
-                ErrorDialog.message(getContext(), getString(R.string.trouble), binding.getRoot());
-//                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
-    public void logout(){
-        spHelper = new SPHelper(getContext());
-        new AlertDialog.Builder(getContext())
-                .setTitle("Konfirmasi")
-                .setMessage("Ingin keluar?")
-                .setPositiveButton("Iya", (dialog, which) -> {
-                    spHelper.clearData();
-
-                    startActivity(new Intent(getContext(), Login.class));
-                    getActivity().finish();
-                })
-                .setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .show();
-    }
 }

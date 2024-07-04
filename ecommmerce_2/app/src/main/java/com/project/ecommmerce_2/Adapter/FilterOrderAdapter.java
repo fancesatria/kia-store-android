@@ -56,7 +56,7 @@ public class FilterOrderAdapter extends RecyclerView.Adapter<FilterOrderAdapter.
         holder.btnBayar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((UnpaidOrder) context).updateStatus(orderModel.getSnap_token(), context);
+//                ((UnpaidOrder) context).updateStatus(orderModel.getSnap_token(), context);
             }
         });
 

@@ -20,5 +20,7 @@ public interface OngkirContract {
         void showMessage(String message);
         String getOrigin();
         String getDestination();
+
+        void onCartUpdated();
     }
 }

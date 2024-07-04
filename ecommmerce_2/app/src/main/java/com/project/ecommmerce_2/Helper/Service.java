@@ -72,7 +72,7 @@ public interface Service {
 
 
     //ORDER FILTER +++++++++++++++++++++++++++++++++++
-    @GET("orders/filter/belum-bayars/{id}")
+    @GET("orders/filter/belum-bayar/{id}")
     Call<List<OrderModel>> getUnpaid(@Path("id") int id);
     @GET("orders/filter/sudah-bayar/{id}")//get
     Call<List<OrderModel>> getPaid(@Path("id") int id);

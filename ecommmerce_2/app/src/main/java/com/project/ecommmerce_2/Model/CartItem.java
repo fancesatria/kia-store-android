@@ -1,6 +1,8 @@
 package com.project.ecommmerce_2.Model;
 
-public class CartItem {
+import java.io.Serializable;
+
+public class CartItem implements Serializable {
     private int id;
     private String name;
     private String image;

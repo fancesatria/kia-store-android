@@ -57,6 +57,12 @@ public class Payment extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 LoadingDialog.close();
+
+                if(url.contains("https://google.com/")){
+                    startActivity(new Intent(Payment.this, MainActivity.class));
+                    finish();
+                }
+
             }
 
             @Override

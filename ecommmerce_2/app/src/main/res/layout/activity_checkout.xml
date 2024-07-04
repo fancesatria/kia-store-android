@@ -38,9 +38,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/button_background"
+                android:backgroundTint="#DADADA"
                 android:text="Pilih Pengiriman"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/darkergrey" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -79,15 +79,16 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMain"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_margin="10dp"
-                tools:listitem="@layout/list_item_main" />
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                tools:listitem="@layout/list_item_courier"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp"
+                android:padding="5dp"
                 android:layout_marginTop="5dp">
 
                 <TextView
@@ -100,10 +101,9 @@
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/item"
+                    android:id="@+id/cartItems"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:padding="10dp"
+                    android:layout_height="wrap_content"
                     tools:listitem="@layout/item_order_detail"/>
             </LinearLayout>
 
@@ -112,14 +112,31 @@
     </androidx.core.widget.NestedScrollView>
 
     <!-- Button Checkout -->
-    <Button
-        android:id="@+id/btnCheckout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Bayar Sekarang"
-        android:backgroundTint="#DADADA"
-        android:enabled="false"
-        android:layout_gravity="bottom" />
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/txtTotalPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total: 0"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="end"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnPayNow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Bayar Sekarang"
+            android:background="@drawable/button_background_dark"
+            android:enabled="false"
+            android:layout_gravity="bottom" />
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
