@@ -49,6 +49,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 i.putExtra("image", product.getGambar());
                 i.putExtra("name", product.getNama());
                 i.putExtra("price", product.getHarga());
+                i.putExtra("stock", product.getStok());
+                i.putExtra("weight", product.getBerat());
                 context.startActivity(i);
             }
         });

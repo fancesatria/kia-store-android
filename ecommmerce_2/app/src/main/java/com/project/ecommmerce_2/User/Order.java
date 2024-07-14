@@ -123,7 +123,7 @@ public class Order extends AppCompatActivity {
         }
         new AlertDialog.Builder(context)
                 .setTitle("Konfirmasi")
-                .setMessage("Update status pembayaran?")
+                .setMessage("Lakukan payar sekarang?")
                 .setPositiveButton("Iya", (dialog, which) -> {
                     LoadingDialog.load(context);
                     Call<Void> call = API.getRetrofit(context).updateStatus(snap_token);

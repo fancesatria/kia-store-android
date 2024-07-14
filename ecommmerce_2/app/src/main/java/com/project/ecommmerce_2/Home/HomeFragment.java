@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.project.ecommmerce_2.Database.Repository.ProductRepository;
+import com.project.ecommmerce_2.Model.BannerModel;
 import com.project.ecommmerce_2.Search;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -90,11 +91,6 @@ public class HomeFragment extends Fragment {
         productRepository = new ProductRepository(requireActivity().getApplication());
 
         load();
-        bind.searchButton.setOnClickListener(view -> {
-            Intent i = new Intent(getContext(), Search.class);
-            startActivity(i);
-        });
-
         return bind.getRoot();
     }
 
@@ -102,7 +98,12 @@ public class HomeFragment extends Fragment {
         sp = new SPHelper(getContext());
         slider();
         fetchData();
-        bind.greetings.setText("Hello, " + sp.getUsername());
+        bind.greetings.setText("Halo, " + sp.getUsername());
+
+        bind.searchButton.setOnClickListener(view -> {
+            Intent i = new Intent(getContext(), Search.class);
+            startActivity(i);
+        });
     }
 
     public void slider(){
@@ -117,19 +118,22 @@ public class HomeFragment extends Fragment {
         sliderView.setScrollTimeInSec(3);
         sliderView.setAutoCycle(true);
         sliderView.startAutoCycle();
-        renewItems();
-        removeLastItem();
+//        renewItems();
+//        removeLastItem();
+        fetchBanner();
     }
 
     public void renewItems() {
         List<SliderItem> sliderItemList = new ArrayList<>();
-        // Dummy data
+        // Loop 5 item banner
         for (int i = 0; i < 5; i++) {
             SliderItem sliderItem = new SliderItem();
             sliderItem.setDescription("");
             if (i % 2 == 0) {
+                // loop yg index genap
                 sliderItem.setImageUrl("https://img.freepik.com/free-vector/flat-design-minimal-boutique-sale-background_23-2149337460.jpg");
             } else {
+                // loop yg index ganjil
                 sliderItem.setImageUrl("https://img.freepik.com/free-vector/horizontal-sale-banner-template_23-2148897328.jpg");
             }
             sliderItemList.add(sliderItem);
@@ -183,6 +187,62 @@ public class HomeFragment extends Fragment {
             public void onFailure(Call<List<ProductModel>> call, Throwable t) {
                 LoadingDialog.close();
                 ErrorDialog.message(getContext(), getString(R.string.trouble), bind.getRoot());
+            }
+        });
+    }
+
+    public void fetchBanner(){
+        LoadingDialog.load(getContext());
+        Call<BannerModel> bannerModelCall = API.getRetrofit(getContext()).getBanner();
+        bannerModelCall.enqueue(new Callback<BannerModel>() {
+            @Override
+            public void onResponse(Call<BannerModel> call, Response<BannerModel> response) {
+                LoadingDialog.close();
+                if (response.isSuccessful() && response.body() != null){
+                    BannerModel bannerModel = response.body();
+                    List<SliderItem> listSlider = new ArrayList<>();
+                    if (bannerModel.getBanner_1() != null){
+                        SliderItem sliderItem = new SliderItem();
+                        sliderItem.setDescription("");
+                        sliderItem.setImageUrl(API.ROOT_URL+bannerModel.getBanner_1());
+                        listSlider.add(sliderItem);
+
+                    }
+                    if (bannerModel.getBanner_2() != null){
+                        SliderItem sliderItem = new SliderItem();
+                        sliderItem.setDescription("");
+                        sliderItem.setImageUrl(API.ROOT_URL+bannerModel.getBanner_2());
+                        listSlider.add(sliderItem);
+                    }
+                    if (bannerModel.getBanner_3() != null){
+                        SliderItem sliderItem = new SliderItem();
+                        sliderItem.setDescription("");
+                        sliderItem.setImageUrl(API.ROOT_URL+bannerModel.getBanner_3());
+                        listSlider.add(sliderItem);
+                    }
+                    if (bannerModel.getBanner_4() != null){
+                        SliderItem sliderItem = new SliderItem();
+                        sliderItem.setDescription("");
+                        sliderItem.setImageUrl(API.ROOT_URL+bannerModel.getBanner_4());
+                        listSlider.add(sliderItem);
+                    }
+                    if (bannerModel.getBanner_5() != null){
+                        SliderItem sliderItem = new SliderItem();
+                        sliderItem.setDescription("");
+                        sliderItem.setImageUrl(API.ROOT_URL+bannerModel.getBanner_5());
+                        listSlider.add(sliderItem);
+                    }
+                    adapter.renewItems(listSlider);
+                } else {
+                    ErrorDialog.message(getContext(), getString(R.string.cant_access), getView());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<BannerModel> call, Throwable t) {
+                LoadingDialog.close();
+                ErrorDialog.message(getContext(), getString(R.string.trouble), getView());
             }
         });
     }

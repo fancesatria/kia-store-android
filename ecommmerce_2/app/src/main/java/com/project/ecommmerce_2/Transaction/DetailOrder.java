@@ -1,6 +1,11 @@
 package com.project.ecommmerce_2.Transaction;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -18,6 +23,7 @@ import com.project.ecommmerce_2.Helper.Modul;
 import com.project.ecommmerce_2.Model.OrderDetailModel;
 import com.project.ecommmerce_2.R;
 import com.project.ecommmerce_2.Response.OrderDetailResponse;
+import com.project.ecommmerce_2.Response.SourcePhoneResponse;
 import com.project.ecommmerce_2.User.PersonalInformation;
 import com.project.ecommmerce_2.databinding.ActivityDetailOrderBinding;
 
@@ -30,10 +36,10 @@ import retrofit2.Response;
 
 public class DetailOrder extends AppCompatActivity {
     ActivityDetailOrderBinding bind;
-    OrderDetailAdapter adapter;
-    List<OrderDetailModel> data = new ArrayList<>();
-    String snapToken;
-    String status;
+    private OrderDetailAdapter adapter;
+    private List<OrderDetailModel> data = new ArrayList<>();
+    private String snapToken;
+    private String status, shipping_charge, total_price, resi, phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,7 @@ public class DetailOrder extends AppCompatActivity {
         bind.item.setAdapter(adapter);
 
         fetchOrderDetails(snapToken);
+        getPhone();
         load(snapToken);
     }
 
@@ -56,22 +63,15 @@ public class DetailOrder extends AppCompatActivity {
         bind.txtNominalTransaksi.setText(String.valueOf("Rp. "+Modul.numberFormat(getIntent().getStringExtra("total_harga"))));
         bind.txtTanggalTransaksi.setText(String.valueOf(getIntent().getStringExtra("tanggal_transaksi")));
 
-        status = getIntent().getStringExtra("status_order");
-        bind.txtStatus.setText(status);
-
-        if (status.equalsIgnoreCase("success")) {
-            bind.txtStatus.setBackgroundResource(R.drawable.background_status_teal);
-            bind.btnBayar.setVisibility(View.GONE);
-        } else {
-            bind.txtStatus.setBackgroundResource(R.drawable.backgound_status_maroon);
-            bind.btnBayar.setVisibility(View.VISIBLE);
-        }
-
-        bind.btnBayar.setOnClickListener(new View.OnClickListener() {
+        bind.imgCopy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateStatus(snap_token);
-                fetchOrderDetails(snap_token);
+                //Copy resi to clipboard
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Resi", bind.txtResi.getText().toString());
+                clipboardManager.setPrimaryClip(clip);
+
+                Toast.makeText(DetailOrder.this, "Nomor resi telah disalin ke clipboard", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -95,6 +95,25 @@ public class DetailOrder extends AppCompatActivity {
                     data.clear();
                     data.addAll(orderDetailResponse.getOrders());
                     adapter.notifyDataSetChanged();
+
+                    status = orderDetailResponse.getStatus();
+                    shipping_charge = orderDetailResponse.getOngkir();
+                    total_price = orderDetailResponse.getHarga_final();
+                    resi = orderDetailResponse.getResi();
+
+                    bind.txtStatus.setText(status);
+                    bind.txtShippingCharge.setText(String.valueOf("Rp. "+Modul.numberFormat(shipping_charge)));
+                    bind.txtResi.setText(resi);
+
+                    if (status.equalsIgnoreCase("success")) {
+                        bind.txtStatus.setBackgroundResource(R.drawable.background_status_teal);
+                        bind.btnBayar.setVisibility(View.GONE);
+                    } else {
+                        bind.txtStatus.setBackgroundResource(R.drawable.backgound_status_maroon);
+                        bind.btnBayar.setVisibility(View.VISIBLE);
+                    }
+
+                    Toast.makeText(DetailOrder.this, ""+orderDetailResponse.getStatus(), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(DetailOrder.this, "Response not successful", Toast.LENGTH_SHORT).show();
                 }
@@ -109,43 +128,40 @@ public class DetailOrder extends AppCompatActivity {
         });
     }
 
-    public void updateStatus(String snap_token){
-        new AlertDialog.Builder(DetailOrder.this)
-                .setTitle("Konfirmasi")
-                .setMessage("Update status pembayaran?")
-                .setPositiveButton("Iya", (dialog, which) -> {
-                    LoadingDialog.load(DetailOrder.this);
-                    Call<Void> call = API.getRetrofit(DetailOrder.this).updateStatus(snap_token);
-                    call.enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            LoadingDialog.close();
-                            if (response.isSuccessful()){
-                                status = "success";bind.txtStatus.setText("Success");
-                                bind.txtStatus.setBackgroundResource(R.drawable.background_status_teal);
-                                bind.btnBayar.setVisibility(View.GONE);
 
-                                SuccessDialog.message(DetailOrder.this, getString(R.string.saved), bind.getRoot());
+    private void getPhone() {
+        Call<SourcePhoneResponse> call = API.getRetrofit(DetailOrder.this).getSourcePhone();
 
-                            } else {
-                                ErrorDialog.message(DetailOrder.this, getString(R.string.unsaved), bind.getRoot());
+        call.enqueue(new Callback<SourcePhoneResponse>() {
+            @Override
+            public void onResponse(Call<SourcePhoneResponse> call, Response<SourcePhoneResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SourcePhoneResponse sourcePhoneResponse = response.body();
+                    if (response.isSuccessful()) {
+                        phone = sourcePhoneResponse.getPhone();
+                        bind.btnBayar.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String message = "Halo, saya ingin membatalkan pesanan";
+                                String url = "https://wa.me/" + phone + "?text=" + Uri.encode(message);
+
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(url));
+                                startActivity(intent);
                             }
-                            fetchOrderDetails(snap_token);
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            LoadingDialog.close();
-                            Toast.makeText(DetailOrder.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                })
-                .setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
+                        });
+                    } else {
+                        Toast.makeText(DetailOrder.this, "Failed to get phone", Toast.LENGTH_SHORT).show();
                     }
-                })
-                .show();
+                } else {
+                    Toast.makeText(DetailOrder.this, getString(R.string.cant_access), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SourcePhoneResponse> call, Throwable t) {
+                Toast.makeText(DetailOrder.this, getString(R.string.trouble), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

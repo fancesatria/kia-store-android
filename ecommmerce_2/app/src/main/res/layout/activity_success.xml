@@ -1,79 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Transaction.Success"
-    android:orientation="vertical">
+    tools:context=".Transaction.Success">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="15dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="32dp"
         android:layout_marginRight="10dp"
-        android:orientation="vertical">
+        android:layout_marginBottom="15dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/icon"
             android:layout_width="110dp"
             android:layout_height="110dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="2dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginLeft="0dp"
+            android:layout_marginTop="40dp"
             android:layout_marginRight="0dp"
+            android:layout_marginBottom="2dp"
             android:padding="0dp"
-            android:src="@drawable/success"
-            android:layout_gravity="center_horizontal"/>
+            android:src="@drawable/success" />
 
         <TextView
             android:id="@+id/txtSuccess"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="0dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginRight="0dp"
+            android:padding="0dp"
+            android:text="Pesanan berhasil dibuat!"
+            android:textAlignment="center"
+            android:textColor="@color/darkergrey"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
-            android:textAlignment="center"
-            android:layout_gravity="center_horizontal"
-            android:text="Transaksi Sukses!"
+            android:layout_marginBottom="20dp"
             android:padding="0dp"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/darkergrey"/>
+            android:text="Terima kasih! pesanan anda akan segera diproses"
+            android:textAlignment="center"
+            android:textColor="@color/darkergrey"
+            android:textSize="13sp" />
     </LinearLayout>
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Kembali"
+        android:textColor="@color/darkergrey"
+        android:backgroundTint="#DADADA"
+        android:enabled="false"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/btnBack"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Kembali"
-                android:textColor="@color/darkergrey"
-                android:backgroundTint="#DADADA"
-                android:enabled="false"/>
-        </LinearLayout>
-    </LinearLayout>
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="25dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

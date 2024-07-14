@@ -17,6 +17,9 @@ public class PaymentModel {
     @SerializedName("kota_kabupaten")
     private String kota_kabupaten;
 
+    @SerializedName("kecamatan")
+    private String kecamatan;
+
     @SerializedName("alamat_lengkap")
     private String alamat_lengkap;
 
@@ -27,14 +30,23 @@ public class PaymentModel {
     private String harga_ongkir;
 
 
-    public PaymentModel(int user_id, List<Item> items, String provinsi, String kota_kabupaten, String alamat_lengkap, String nama_ongkir, String harga_ongkir) {
+    public PaymentModel(int user_id, List<Item> items, String provinsi, String kota_kabupaten, String kecamatan,String alamat_lengkap, String nama_ongkir, String harga_ongkir) {
         this.user_id = user_id;
         this.items = items;
         this.provinsi = provinsi;
         this.kota_kabupaten = kota_kabupaten;
+        this.kecamatan = kecamatan;
         this.alamat_lengkap = alamat_lengkap;
         this.nama_ongkir = nama_ongkir;
         this.harga_ongkir = harga_ongkir;
+    }
+
+    public String getKecamatan() {
+        return kecamatan;
+    }
+
+    public void setKecamatan(String kecamatan) {
+        this.kecamatan = kecamatan;
     }
 
     public int getUser_id() {

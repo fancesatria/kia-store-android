@@ -17,6 +17,7 @@ import com.project.ecommmerce_2.MainActivity;
 import com.project.ecommmerce_2.Model.LoginModel;
 import com.project.ecommmerce_2.R;
 import com.project.ecommmerce_2.Response.LoginResponse;
+import com.project.ecommmerce_2.Response.SourceAdressResponse;
 import com.project.ecommmerce_2.User.PersonalInformation;
 import com.project.ecommmerce_2.databinding.ActivityLoginBinding;
 
@@ -28,10 +29,12 @@ import retrofit2.Response;
 
 public class Login extends AppCompatActivity {
     ActivityLoginBinding bind;
+    SPHelper sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bind = ActivityLoginBinding.inflate(getLayoutInflater());
+        sp = new SPHelper(Login.this);
         setContentView(bind.getRoot());
     }
 
@@ -47,7 +50,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void prosesLogin(LoginModel loginModel){
-        SPHelper sp = new SPHelper(Login.this);
+
         LoadingDialog.load(Login.this);
         Call<LoginResponse> loginResponseCall = API.getRetrofit(Login.this).login(loginModel);
         loginResponseCall.enqueue(new Callback<LoginResponse>() {
@@ -60,10 +63,11 @@ public class Login extends AppCompatActivity {
                     sp.setEmail(response.body().getData().getEmail());
                     sp.setUsername(response.body().getData().getName());
                     sp.setIdPengguna(response.body().getData().getId());
-//                    SuccessDialog.message(Login.this, "Login berhasil", bind.getRoot());
 
                     startActivity(new Intent(Login.this, MainActivity.class));
                     finish();
+
+                    getAddress();
 
                 } else {
 
@@ -75,7 +79,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 LoadingDialog.close();
-                ErrorDialog.message(Login.this, getString(R.string.trouble), bind.getRoot());
+                ErrorDialog.message(Login.this, "Akun tidak ditemukan, periksa kembali password anda", bind.getRoot());
 //                Toast.makeText(Login.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -83,6 +87,11 @@ public class Login extends AppCompatActivity {
 
     public void register(View view){
         startActivity(new Intent(Login.this, Register.class));
+        finish();
+    }
+
+    public void forgotPassword(View view){
+        startActivity(new Intent(Login.this, ForgotPassword.class));
         finish();
     }
 
@@ -99,8 +108,35 @@ public class Login extends AppCompatActivity {
             ErrorDialog.message(Login.this, getString(R.string.is_email), bind.getRoot());
             return true;
         } else {
-            SuccessDialog.message(Login.this, "Login berhasil", bind.getRoot());
+
         }
         return false;
+    }
+
+    private void getAddress() {
+        Call<SourceAdressResponse> call = API.getRetrofit(this).getSourceAddress();
+
+        call.enqueue(new Callback<SourceAdressResponse>() {
+            @Override
+            public void onResponse(Call<SourceAdressResponse> call, Response<SourceAdressResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SourceAdressResponse SourceAdressResponse = response.body();
+                    if (SourceAdressResponse.isSuccess()) {
+                        sp.setSourceProvinceId(SourceAdressResponse.getData().getProvince());
+                        sp.setSourceCityId(SourceAdressResponse.getData().getCity());
+                        sp.setSourcePostalCode(SourceAdressResponse.getData().getCity());
+                    } else {
+                        Toast.makeText(Login.this, "Failed to get address", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(Login.this, "Response not successful", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SourceAdressResponse> call, Throwable t) {
+                Toast.makeText(Login.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -48,6 +48,52 @@
                 android:layout_height="wrap_content"
                 android:text="Rp. 200.000"
                 android:textSize="15sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Biaya Pengiriman:"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txtShippingCharge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp. 200.000"
+                android:textSize="15sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nomor Resi:"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginTop="5dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtResi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0980uyt78"
+                    android:textSize="15sp"
+                    android:layout_marginRight="5dp"/>
+
+                <ImageView
+                    android:id="@+id/imgCopy"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/baseline_content_copy_24"/>
+
+            </LinearLayout>
         </LinearLayout>
 
         <TextView
@@ -92,7 +138,7 @@
         android:id="@+id/btnBayar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Saya sudah bayar"
+        android:text="Batalkan Pesanan"
         android:textColor="@color/grey"
         android:backgroundTint="#DADADA"/>
 </LinearLayout>

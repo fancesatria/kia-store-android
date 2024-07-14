@@ -31,7 +31,7 @@ public class PersonalInformation extends AppCompatActivity {
 
     private ActivityPersonalInformationBinding bind;
     private EditText etPhone, etPostalCode, etAddress, etKecamatan;
-    private String new_province_id, new_province, new_city_id, new_city;
+    public static String new_province_id, new_province, new_city_id, new_city;
     private SPHelper sp;
 
     @Override
@@ -125,7 +125,7 @@ public class PersonalInformation extends AppCompatActivity {
         LoadingDialog.load(PersonalInformation.this);
 
         // Online
-        Call<List<ProfileModel>> profileGetRespCall = API.getRetrofit(PersonalInformation.this).getProfile(17);
+        Call<List<ProfileModel>> profileGetRespCall = API.getRetrofit(PersonalInformation.this).getProfile(sp.getIdPengguna());
         profileGetRespCall.enqueue(new Callback<List<ProfileModel>>() {
             @Override
             public void onResponse(Call<List<ProfileModel>> call, Response<List<ProfileModel>> response) {
@@ -166,11 +166,14 @@ public class PersonalInformation extends AppCompatActivity {
                     sp.setUserProvinceId(CityAdapter.province_id);
                     sp.setUserCity(CityAdapter.city_name);
                     sp.setUserCityId(CityAdapter.city_id);
+                    sp.setUserAddress(bind.address.getText().toString());
+                    sp.setUserPostalCode(bind.postalCode.getText().toString());
+                    sp.setUserKecamatan(bind.kecamatan.getText().toString());
 
                     load(false);
 
                     SuccessDialog.message(PersonalInformation.this, getString(R.string.saved), bind.getRoot());
-
+                    fetchData();
                 } else {
                     ErrorDialog.message(PersonalInformation.this, getString(R.string.unsaved), bind.getRoot());
                 }
@@ -181,6 +184,7 @@ public class PersonalInformation extends AppCompatActivity {
             public void onFailure(Call<ProfileModel> call, Throwable t) {
                 LoadingDialog.close();
                 ErrorDialog.message(PersonalInformation.this, getString(R.string.trouble), bind.getRoot());
+                Toast.makeText(PersonalInformation.this, String.valueOf(t.getMessage()), Toast.LENGTH_SHORT).show();
             }
         });
     }

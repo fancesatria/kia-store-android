@@ -105,7 +105,7 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@mipmap/ic_launcher_unpaid_foreground"/>
+                        android:src="@mipmap/ic_unpaid_3_foreground"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@mipmap/ic_launcher_box_foreground"/>
+                        android:src="@mipmap/ic_packed_2_foreground"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -143,7 +143,7 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@mipmap/ic_launcher_shipping_foreground"/>
+                        android:src="@mipmap/ic_shipping_2_foreground"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:id="@+id/history"
+                    android:id="@+id/cancelled"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -191,7 +191,26 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@mipmap/ic_launcher_history_foreground"/>
+                        android:src="@mipmap/ic_cancelled_2_foreground"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="Dibatalkan"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/history"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginRight="20dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@mipmap/ic_history_2_foreground"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -232,7 +251,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
-                        android:text="Pengaturan Akun"
+                        android:text="Informasi Pribadi"
                         android:textSize="15sp"/>
                 </LinearLayout>
                 <com.google.android.material.divider.MaterialDivider

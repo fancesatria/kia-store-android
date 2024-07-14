@@ -30,7 +30,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:weightSum="2"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -95,24 +96,6 @@
                             android:textSize="14sp"
                             android:text="Rp. 150.000" />
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="1">
-                        <Button
-                            android:id="@+id/btnBayar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:gravity="center_vertical"
-                            android:text="Sudah Bayar"
-                            android:visibility="gone"
-                            android:backgroundTint="#A5A5A5"/>
-                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -124,7 +107,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:gravity="end|center_vertical"
                         android:layout_gravity="end">
@@ -142,7 +125,24 @@
                             android:text="Pending"
                             android:background="@drawable/backgound_status_maroon"
                             android:textSize="15sp"
+                            android:visibility="invisible"
                             android:textColor="@android:color/white"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+
+                        <Button
+                            android:id="@+id/btnBayar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center_vertical"
+                            android:text="Bayar Sekarang"
+                            android:backgroundTint="#A5A5A5"/>
 
 
                     </LinearLayout>

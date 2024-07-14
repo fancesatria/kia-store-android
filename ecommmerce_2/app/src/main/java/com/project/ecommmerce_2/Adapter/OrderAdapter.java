@@ -17,6 +17,7 @@ import com.project.ecommmerce_2.Helper.Modul;
 import com.project.ecommmerce_2.Model.OrderModel;
 import com.project.ecommmerce_2.R;
 import com.project.ecommmerce_2.Transaction.DetailOrder;
+import com.project.ecommmerce_2.Transaction.Payment;
 import com.project.ecommmerce_2.User.Order;
 
 import java.text.ParseException;
@@ -52,15 +53,20 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
             if (orderModel.getStatus().equalsIgnoreCase("Sudah Bayar")){
                 holder.status.setText("Diproses");
             }
+            holder.status.setVisibility(View.VISIBLE);
         } else {
+            holder.status.setVisibility(View.INVISIBLE);
             holder.status.setBackgroundResource(R.drawable.backgound_status_maroon);
-            holder.btnBayar.setVisibility(View.GONE);
+            holder.btnBayar.setVisibility(View.VISIBLE);
         }
 
         holder.btnBayar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((Order) context).updateStatus(orderModel.getSnap_token(), context);
+//                ((Order) context).updateStatus(orderModel.getSnap_token(), context);
+                Intent i = new Intent(context, Payment.class);
+                i.putExtra("snap_token", orderModel.getSnap_token());
+                context.startActivity(i);
             }
         });
 

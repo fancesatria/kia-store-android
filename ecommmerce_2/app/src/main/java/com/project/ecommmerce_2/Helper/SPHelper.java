@@ -5,9 +5,11 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.project.ecommmerce_2.Model.CartItem;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class SPHelper {
@@ -23,6 +25,7 @@ public class SPHelper {
         this.gson = new Gson();
     }
 
+    // User Info Login
     public String getValue(String key){
         return sp.getString(key, "");
     }
@@ -68,6 +71,9 @@ public class SPHelper {
         return getValue("email");
     }
 
+
+
+    // User Address
     public void setUserProvince(String province){
         editor.putString("province", province);
         editor.commit();
@@ -105,6 +111,86 @@ public class SPHelper {
         return getValue("city_id");
     }
 
+
+    public void setUserAddress(String add){
+        editor.putString("add", add);
+        editor.commit();
+    }
+
+    public String getUserAddress(){
+        return getValue("add");
+    }
+
+
+    public void setUserPostalCode(String user_zipcode){
+        editor.putString("user_zipcode", user_zipcode);
+        editor.commit();
+    }
+
+    public String getUserPostalCode(){
+        return getValue("user_zipcode");
+    }
+
+    public void setUserKecamatan(String camat){
+        editor.putString("camat", camat);
+        editor.commit();
+    }
+
+    public String getUserKecamatan(){
+        return getValue("camat");
+    }
+
+
+
+    // Source Address
+    public void setSourceProvince(String province){
+        editor.putString("province", province);
+        editor.commit();
+    }
+    public String getSourceProvince(){
+        return getValue("province");
+    }
+
+    public void setSourceProvinceId(String province_id){
+        editor.putString("province_id", province_id);
+        editor.commit();
+    }
+
+    public String getSourceProvinceId(){
+        return getValue("province_id");
+    }
+
+
+    public void setSourceCity(String city){
+        editor.putString("city", city);
+        editor.commit();
+    }
+
+    public String getSourceCity(){
+        return getValue("city");
+    }
+
+    public void setSourceCityId(String city_id){
+        editor.putString("city_id", city_id);
+        editor.commit();
+    }
+
+    public String getSourceCityId(){
+        return getValue("city_id");
+    }
+
+    public void setSourcePostalCode(String postalCode){
+        editor.putString("postalCode", postalCode);
+        editor.commit();
+    }
+
+    public String getSourcePostalCode(){
+        return getValue("postalCode");
+    }
+
+
+
+    // Functions
     public void clearData(){
         editor.clear();
         editor.commit();
@@ -118,13 +204,39 @@ public class SPHelper {
         editor.commit();
     }
 
-    public void removeFromCart(String item) {
-        List<String> cartItems = getCartItems();
-        cartItems.remove(item);
-        String jsonCartItems = gson.toJson(cartItems);
+    public void removeFromCart(String itemJson) {
+        Gson gson = new Gson();
+        CartItem itemToRemove = gson.fromJson(itemJson, CartItem.class);
+
+        // Retrieve the current cart items from SharedPreferences
+        List<String> cartItemsJson = getCartItems();
+        List<CartItem> cartItems = new ArrayList<>();
+        for (String json : cartItemsJson) {
+            cartItems.add(gson.fromJson(json, CartItem.class));
+        }
+
+        // Find and remove the item
+        Iterator<CartItem> iterator = cartItems.iterator();
+        while (iterator.hasNext()) {
+            CartItem item = iterator.next();
+            if (item.getId() == itemToRemove.getId()) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        // Convert updated list back to JSON strings
+        List<String> updatedCartItemsJson = new ArrayList<>();
+        for (CartItem item : cartItems) {
+            updatedCartItemsJson.add(gson.toJson(item));
+        }
+
+        // Save the updated cart items back to SharedPreferences
+        String jsonCartItems = gson.toJson(updatedCartItemsJson);
         editor.putString("cart", jsonCartItems);
         editor.commit();
     }
+
 
     public List<String> getCartItems() {
         String jsonCartItems = sp.getString("cart", null);

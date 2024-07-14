@@ -58,11 +58,10 @@ public class Payment extends AppCompatActivity {
                 super.onPageFinished(view, url);
                 LoadingDialog.close();
 
-                if(url.contains("https://google.com/")){
-                    startActivity(new Intent(Payment.this, MainActivity.class));
+                if(url.contains("https://laravel.com/")){
+                    startActivity(new Intent(Payment.this, Success.class));
                     finish();
                 }
-
             }
 
             @Override

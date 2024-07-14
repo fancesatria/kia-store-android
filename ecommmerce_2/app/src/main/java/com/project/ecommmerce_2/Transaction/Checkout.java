@@ -1,8 +1,11 @@
+
 package com.project.ecommmerce_2.Transaction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -11,11 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.project.ecommmerce_2.Adapter.CartAdapter;
 import com.project.ecommmerce_2.Adapter.CheckoutAdapter;
+import com.project.ecommmerce_2.Auth.Login;
 import com.project.ecommmerce_2.Component.ErrorDialog;
 import com.project.ecommmerce_2.Component.LoadingDialog;
+import com.project.ecommmerce_2.Component.SuccessDialog;
 import com.project.ecommmerce_2.Helper.API;
 import com.project.ecommmerce_2.Helper.Modul;
-import com.project.ecommmerce_2.Helper.RajaOngkirHelper;
 import com.project.ecommmerce_2.Helper.SPHelper;
 import com.project.ecommmerce_2.Model.CartItem;
 import com.project.ecommmerce_2.Model.PaymentModel;
@@ -28,6 +32,7 @@ import com.project.ecommmerce_2.RajaOngkir.Presenter.OngkirPresenter;
 import com.project.ecommmerce_2.Response.PaymentResponse;
 import com.project.ecommmerce_2.databinding.ActivityCheckoutBinding;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Checkout extends AppCompatActivity implements OngkirContract.View, CartAdapter.CartUpdateListener {
+public class Checkout extends AppCompatActivity implements OngkirContract.View, CartAdapter.CartUpdateListener, OngkirAdapter.OngkirUpdateListener {
 
     private static final int REQUEST_SOURCE = 1;
     private static final int REQUEST_DESTINATION = 2;
@@ -46,7 +51,7 @@ public class Checkout extends AppCompatActivity implements OngkirContract.View, 
     private int shipping_charge = 0;
     private String selectedCourier, selectedService, totalPrice;
 
-    private String source_id = RajaOngkirHelper.source_city_id;;
+    private String source_id = "";
     private String destination_id = "";
 
     private OngkirPresenter presenter;
@@ -55,6 +60,7 @@ public class Checkout extends AppCompatActivity implements OngkirContract.View, 
     private List<DataCourier> data = new ArrayList<>();
     private List<String> courier = new ArrayList<>();
     private ActivityCheckoutBinding bind;
+    private int total_weight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +69,92 @@ public class Checkout extends AppCompatActivity implements OngkirContract.View, 
         setContentView(bind.getRoot());
 
         presenter = new OngkirPresenter(this);
-        subtotalPrice = Integer.parseInt(getIntent().getStringExtra("total_price"));
+        spHelper = new SPHelper(Checkout.this);
+        source_id = String.valueOf(spHelper.getSourceCityId());
+        subtotalPrice = getIntent().getIntExtra("total_price", 0);
+        total_weight = getIntent().getIntExtra("total_weight", 0);
+        loadMain();
         loadCourier();
         loadCartItems();
         setUpCartItems();
         loadSelectedCourier();
         calculateTotal();
+        loadCheckbox();
 
+        // Add listener for the checkbox
+        bind.checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                useStoredData();
 
+            } else {
+                clearForm();
+            }
+        });
+    }
+
+    private void useStoredData() {
+        if (!spHelper.getUserCity().isEmpty() && !spHelper.getUserProvince().isEmpty()) {
+            bind.inputKotaTujuan.setText(spHelper.getUserCity());
+            bind.inputProvince.setText(spHelper.getUserProvince());
+            bind.inputAddress.setText(spHelper.getUserAddress());
+            bind.inputPostalCode.setText(spHelper.getUserPostalCode());
+            bind.inputKecamatan.setText(spHelper.getUserKecamatan());
+            destination_id = spHelper.getUserCityId();
+            presenter.setENV(getOrigin(), getDestination(), total_weight);
+        }
+        // Hide city input field
+        ViewGroup.LayoutParams params = bind.inputLayoutKota.getLayoutParams();
+        params.width = 0;
+        bind.inputLayoutKota.setLayoutParams(params);
+        bind.inputLayoutProvince.setVisibility(View.VISIBLE);
+    }
+
+    private void clearForm() {
+        bind.inputKotaTujuan.setText("");
+        bind.inputProvince.setText("");
+        bind.inputAddress.setText("");
+        bind.inputPostalCode.setText("");
+        bind.inputKecamatan.setText("");
+        destination_id = null;
+
+        // Show city input field
+        ViewGroup.LayoutParams params = bind.inputLayoutKota.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT; // Reset to original width
+        bind.inputLayoutKota.setLayoutParams(params);
+        bind.inputLayoutProvince.setVisibility(View.GONE);
+
+        // Clear city data
+        clearCityData();
+    }
+
+    private void clearCityData() {
+        CityAdapter.city_name = "";
+        CityAdapter.province_name = "";
+        destination_id = "";
+    }
+
+    public void loadMain() {
+        bind.inputReceiver.setText(spHelper.getUsername());
         bind.inputKotaTujuan.setFocusable(false);
         bind.inputKotaTujuan.setClickable(true);
+
+//        bind.inputReceiver.setFocusable(false);
+//        bind.inputReceiver.setClickable(true);
+
+//        bind.inputProvince.setFocusable(false);
+//        bind.inputProvince.setClickable(true);
+//
+//        bind.inputKecamatan.setFocusable(false);
+//        bind.inputKecamatan.setClickable(true);
+//
+//        bind.inputPostalCode.setFocusable(false);
+//        bind.inputPostalCode.setClickable(true);
+//
+//        bind.inputAddress.setFocusable(false);
+//        bind.inputAddress.setClickable(true);
+
+
+
         bind.inputKotaTujuan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,14 +167,34 @@ public class Checkout extends AppCompatActivity implements OngkirContract.View, 
         bind.btnPayNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(shipping_charge == 0){
-
+                if (shipping_charge == 0) {
+                    Toast.makeText(Checkout.this, "Pilih pengiriman terlebih dahulu", Toast.LENGTH_SHORT).show();
                 } else {
-                    createPaymentRequest(cartItems);
+
+                    if (validasi()){
+                        createPaymentRequest(cartItems);
+                    }
                 }
             }
         });
+
+        bind.btnSubmit.setVisibility(View.GONE);
+        bind.btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                data.clear(); courier.clear();
+                if (bind.checkbox.isChecked()) {
+                    useStoredData();
+
+                }
+//                presenter.setENV(getOrigin(), getDestination(), total_weight);
+
+            }
+        });
+
     }
+
+
 
     @Override
     protected void onResume() {
@@ -101,15 +203,14 @@ public class Checkout extends AppCompatActivity implements OngkirContract.View, 
         calculateTotal();
     }
 
-    public void loadSelectedCourier(){
+    public void loadSelectedCourier() {
         shipping_charge = OngkirAdapter.selected_shipping_charge;
         selectedCourier = OngkirAdapter.selected_courier;
         selectedService = OngkirAdapter.selected_service;
     }
 
-    public void loadCartItems(){
-
-        if(getIntent().hasExtra("selectedItems")){
+    public void loadCartItems() {
+        if (getIntent().hasExtra("selectedItems")) {
             cartItems = (List<CartItem>) getIntent().getSerializableExtra("selectedItems");
         } else {
             cartItems = new ArrayList<>();
@@ -117,13 +218,13 @@ public class Checkout extends AppCompatActivity implements OngkirContract.View, 
         }
     }
 
-    public void loadCourier(){
-        adapter = new OngkirAdapter(this, data, courier);
+    public void loadCourier() {
+        adapter = new OngkirAdapter(this, data, courier, this); // Pass 'this' as the listener
         bind.rvMain.setLayoutManager(new LinearLayoutManager(this));
         bind.rvMain.setAdapter(adapter);
     }
 
-    public void setUpCartItems(){
+    public void setUpCartItems() {
         cartAdapter = new CheckoutAdapter(cartItems, this, this);
         bind.cartItems.setLayoutManager(new LinearLayoutManager(this));
         bind.cartItems.setAdapter(cartAdapter);
@@ -150,6 +251,7 @@ public class Checkout extends AppCompatActivity implements OngkirContract.View, 
         if (data.isEmpty() || courier.isEmpty()) {
             Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -177,15 +279,26 @@ public class Checkout extends AppCompatActivity implements OngkirContract.View, 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SOURCE && resultCode == RESULT_OK) {
-
         } else if (requestCode == REQUEST_DESTINATION && resultCode == RESULT_OK) {
-            bind.inputKotaTujuan.setText(data.getStringExtra("city"));
-            destination_id = data.getStringExtra("city_id");
-            presenter.setENV(getOrigin(), getDestination(), 1000);
+            if (data != null) {
+                bind.inputKotaTujuan.setText(CityAdapter.city_name);
+                bind.inputProvince.setText(CityAdapter.province_name);
+                destination_id = data.getStringExtra("city_id");
+
+                // Hide city input field if stored data exists
+                if (!bind.inputKotaTujuan.getText().toString().isEmpty()) {
+                    ViewGroup.LayoutParams params = bind.inputLayoutKota.getLayoutParams();
+                    params.width = 0;
+                    bind.inputLayoutKota.setLayoutParams(params);
+                    bind.inputLayoutProvince.setVisibility(View.VISIBLE);
+                }
+                presenter.setENV(getOrigin(), getDestination(), total_weight);
+            }
+            loadMain();
         }
     }
 
-    private void createPaymentRequest(List<CartItem> selectedItems) {
+    public void createPaymentRequest(List<CartItem> selectedItems) {
         LoadingDialog.load(Checkout.this);
 
         List<PaymentModel.Item> items = new ArrayList<>();
@@ -198,10 +311,11 @@ public class Checkout extends AppCompatActivity implements OngkirContract.View, 
                 items,
                 CityAdapter.province_name,
                 CityAdapter.city_name,
-                "Alamat",
+                bind.inputAddress.getText().toString(),
+                bind.inputKecamatan.getText().toString(),
                 OngkirAdapter.selected_courier,
                 String.valueOf(shipping_charge)
-                );
+        );
 
         Call<PaymentResponse> call = API.getRetrofit(Checkout.this).createPayment(paymentModel);
         call.enqueue(new Callback<PaymentResponse>() {
@@ -221,25 +335,74 @@ public class Checkout extends AppCompatActivity implements OngkirContract.View, 
                         ErrorDialog.message(Checkout.this, getString(R.string.payment_failed), bind.getRoot());
                     }
                 } else {
-                    ErrorDialog.message(Checkout.this, getString(R.string.payment_unable), bind.getRoot());
+                    try {
+                        String errorBody = response.errorBody().string();
+//                        Toast.makeText(Checkout.this, ""+errorBody, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        ErrorDialog.message(Checkout.this, "Error: Unable to parse error body", bind.getRoot());
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<PaymentResponse> call, Throwable t) {
                 LoadingDialog.close();
-                ErrorDialog.message(Checkout.this, getString(R.string.trouble), bind.getRoot());
+                ErrorDialog.message(Checkout.this, "Error: " + t.getMessage(), bind.getRoot());
             }
         });
     }
+
 
     @Override
     public void onCartUpdated() {
         // Update the cart here
     }
 
-    public void calculateTotal(){
-        totalPrice= String.valueOf(subtotalPrice + shipping_charge);
+    @Override
+    public void onOngkirUpdated() {
+        loadSelectedCourier();
+        calculateTotal();
+
+    }
+
+    @Override
+    public void onCartItemUpdated() {
+
+    }
+
+    @Override
+    public void onOngkirUpdated(int shippingCharge, String courier, String service) {
+
+    }
+
+    public void calculateTotal() {
+        loadSelectedCourier();
+        totalPrice = String.valueOf(subtotalPrice + shipping_charge);
         bind.txtTotalPrice.setText("Total: Rp. " + Modul.numberFormat(String.valueOf(totalPrice)));
+    }
+
+    public boolean loadCheckbox() {
+        if (spHelper.getUserCity().isEmpty() || spHelper.getUserProvince().isEmpty()) {
+            bind.checkbox.setVisibility(View.GONE);
+            return false;
+        } else {
+            bind.checkbox.setVisibility(View.VISIBLE);
+            return true;
+        }
+    }
+
+    public boolean validasi(){
+        if(bind.inputReceiver.getText().toString().isEmpty() ||
+                bind.inputProvince.getText().toString().isEmpty() ||
+                bind.inputKotaTujuan.getText().toString().isEmpty() ||
+                bind.inputKecamatan.getText().toString().isEmpty() ||
+                bind.inputPostalCode.getText().toString().isEmpty()
+        ){
+            ErrorDialog.message(Checkout.this, getString(R.string.empty), bind.getRoot());
+            return false;
+        } else {
+            return true;
+        }
     }
 }

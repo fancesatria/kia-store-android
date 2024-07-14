@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.smarteist.autoimageslider.BuildConfig;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +15,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -24,6 +26,7 @@ public class API {
     public static String BASE_URL = "http://kia-client.digitalin-aja.com/api/";
     public static String ROOT_URL = "http://kia-client.digitalin-aja.com/";
     public static String RAJAONGKIR_URL = "https://api.rajaongkir.com/starter/";
+    public static String RAJAONGKIR_KEY = "a697aefc8b5975435d04f91a39e930fa";
 
     public static Service getRetrofit(Context context) {
         SPHelper sp = new SPHelper(context);
@@ -33,9 +36,7 @@ public class API {
             public Response intercept(@NonNull Chain chain) throws IOException {
                 String token = sp.getToken(); // Ambil token dari SPHelper
                 Request newRequest = chain.request().newBuilder()
-                        .addHeader("Authorization", "Bearer " + token)
                         .addHeader("Content-Type", "application/json")
-                        .addHeader("Accept", "application/json")
                         .build();
                 return chain.proceed(newRequest);
             }
@@ -89,15 +90,15 @@ public class API {
         builder.readTimeout(10, TimeUnit.SECONDS);
         builder.connectTimeout(30, TimeUnit.SECONDS);
 
-        /*if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(interceptor);
-        }*/
+        }
 
         builder.addInterceptor(chain -> {
             Request request = chain.request().newBuilder()
-                    .addHeader("key", "ea176e32a352a3210a549aa09e0dc90f")
+                    .addHeader("key", RAJAONGKIR_KEY)
                     .build();
             return chain.proceed(request);
         });

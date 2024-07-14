@@ -27,7 +27,7 @@
     <string name="pw_failed">Password gagal diubah</string>
     <string name="no_data">Tak ada data untuk ditampilkan</string>
 
-    <string name="empty">Data tak boleh kosong</string>
+    <string name="empty">Harap mengisi semua formulir</string>
     <string name="del_ensure">Anda akan menghapus data ini ?</string>
     <string name="logout_ensure">Ingin keluar?</string>
     <string name="title_activity_detail_event">DetailEventActivity</string>

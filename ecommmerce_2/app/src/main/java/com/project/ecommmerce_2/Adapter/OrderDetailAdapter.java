@@ -4,11 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.project.ecommmerce_2.Helper.API;
 import com.project.ecommmerce_2.Helper.Modul;
 import com.project.ecommmerce_2.Model.OrderDetailModel;
 import com.project.ecommmerce_2.R;
@@ -37,6 +40,7 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
         holder.harga.setText("Rp. " + Modul.numberFormat(String.valueOf(orderDetailModel.getHarga())));
         holder.nama.setText(Modul.upperCaseFirst(orderDetailModel.getNama()));
         holder.jumlah.setText(String.valueOf(orderDetailModel.getJumlah()));
+        Glide.with(context).load(API.ROOT_URL + orderDetailModel.getGambar_barang()).into(holder.ivProduk);
     }
 
     @Override
@@ -46,11 +50,13 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nama, harga, jumlah;
+        ImageView ivProduk;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nama = itemView.findViewById(R.id.txtProduk);
             harga = itemView.findViewById(R.id.txtHarga);
             jumlah = itemView.findViewById(R.id.txtJumlah);
+            ivProduk = itemView.findViewById(R.id.ivProduk);
         }
     }
 }

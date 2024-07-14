@@ -10,6 +10,33 @@ public class OrderDetailResponse {
     private List<OrderDetailModel> orders;
     private int total_harga;
     private String status;
+    private String ongkir;
+    private String harga_final;
+    private String resi;
+
+    public String getOngkir() {
+        return ongkir;
+    }
+
+    public void setOngkir(String ongkir) {
+        this.ongkir = ongkir;
+    }
+
+    public String getHarga_final() {
+        return harga_final;
+    }
+
+    public void setHarga_final(String harga_final) {
+        this.harga_final = harga_final;
+    }
+
+    public String getResi() {
+        return resi;
+    }
+
+    public void setResi(String resi) {
+        this.resi = resi;
+    }
 
     public boolean isSuccess() {
         return success;

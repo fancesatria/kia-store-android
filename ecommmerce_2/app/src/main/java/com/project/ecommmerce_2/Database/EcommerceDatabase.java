@@ -12,7 +12,7 @@ import com.project.ecommmerce_2.Model.OrderModel;
 import com.project.ecommmerce_2.Model.PaymentModel;
 import com.project.ecommmerce_2.Model.ProductModel;
 
-@Database(entities = {ProductModel.class}, version = 2, exportSchema = false)
+@Database(entities = {ProductModel.class}, version = 3, exportSchema = false)
 public abstract class EcommerceDatabase extends RoomDatabase {
     public static final String database_name = "ecommerce_db";
 

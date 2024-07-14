@@ -7,12 +7,16 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.project.ecommmerce_2.Component.LoadingDialog;
+import com.project.ecommmerce_2.Detail;
 import com.project.ecommmerce_2.Helper.API;
 import com.project.ecommmerce_2.Helper.Modul;
 import com.project.ecommmerce_2.Helper.SPHelper;
@@ -57,10 +61,20 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         });
 
         holder.ivHapus.setOnClickListener(view -> {
-            removeFromCart(cartItem);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, cartItems.size());
-            cartUpdateListener.onCartUpdated();
+            new AlertDialog.Builder(context)
+                    .setTitle("Konfirmasi")
+                    .setMessage("Update status pembayaran?")
+                    .setPositiveButton("Iya", (dialog, which) -> {
+                        LoadingDialog.load(context);
+                        removeFromCart(cartItem);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, cartItems.size());
+                        cartUpdateListener.onCartUpdated();
+                    })
+                    .setNegativeButton("Tidak", (dialog, which) -> {
+
+                    })
+                    .show();
         });
     }
 
@@ -87,10 +101,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     private void removeFromCart(CartItem cartItem) {
         SPHelper spHelper = new SPHelper(context);
-        String cartItemJson = new Gson().toJson(cartItem);
-        spHelper.removeFromCart(cartItemJson);
+        Gson gson = new Gson();
+        String itemJson = gson.toJson(cartItem);
+        spHelper.removeFromCart(itemJson);
         cartItems.remove(cartItem);
-        cartUpdateListener.onCartUpdated(); // Update total harga dan checkout button
+        notifyDataSetChanged();
     }
 
     public interface CartUpdateListener {

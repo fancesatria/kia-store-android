@@ -15,19 +15,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.ecommmerce_2.Helper.Modul;
+import com.project.ecommmerce_2.Model.CartItem;
 import com.project.ecommmerce_2.Model.OrderModel;
 import com.project.ecommmerce_2.R;
+import com.project.ecommmerce_2.Transaction.Checkout;
 import com.project.ecommmerce_2.Transaction.DetailOrder;
+import com.project.ecommmerce_2.Transaction.Payment;
 import com.project.ecommmerce_2.User.UnpaidOrder;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FilterOrderAdapter extends RecyclerView.Adapter<FilterOrderAdapter.ViewHolder>{
     private Context context;
     private List<OrderModel> data;
 
-    public FilterOrderAdapter(Context contex, List<OrderModel> data) {
+    public FilterOrderAdapter(Context context, List<OrderModel> data) {
         this.context = context;
         this.data = data;
     }
@@ -47,16 +51,26 @@ public class FilterOrderAdapter extends RecyclerView.Adapter<FilterOrderAdapter.
         holder.nama.setText(orderModel.getNama());
         holder.total.setText("Rp. "+ Modul.numberFormat(String.valueOf(Integer.valueOf(orderModel.getTotal_harga()))));
 
-        if (orderModel.getStatus().equalsIgnoreCase("Belum Bayar")) {
-            holder.status.setBackgroundResource(R.drawable.backgound_status_maroon);
-            holder.status.setText(orderModel.getStatus());
+        if (!orderModel.getStatus().equalsIgnoreCase("Belum Bayar")) {
+            holder.status.setBackgroundResource(R.drawable.background_status_teal);
             holder.btnBayar.setVisibility(View.GONE);
+
+            if (orderModel.getStatus().equalsIgnoreCase("Sudah Bayar")){
+                holder.status.setText("Diproses");
+            }
+            holder.status.setVisibility(View.VISIBLE);
+        } else {
+            holder.status.setVisibility(View.INVISIBLE);
+            holder.status.setBackgroundResource(R.drawable.backgound_status_maroon);
+            holder.btnBayar.setVisibility(View.VISIBLE);
         }
 
         holder.btnBayar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                ((UnpaidOrder) context).updateStatus(orderModel.getSnap_token(), context);
+                Intent i = new Intent(context, Payment.class);
+                i.putExtra("snap_token", orderModel.getSnap_token());
+                context.startActivity(i);
             }
         });
 
@@ -95,5 +109,9 @@ public class FilterOrderAdapter extends RecyclerView.Adapter<FilterOrderAdapter.
             btnBayar = itemView.findViewById(R.id.btnBayar);
             linearOrder = itemView.findViewById(R.id.linearOrder);
         }
+    }
+
+    private List<CartItem> getSelectedItemsForOrder(OrderModel orderModel) {
+        return new ArrayList<>();
     }
 }

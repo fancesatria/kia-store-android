@@ -50,7 +50,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
                     province_name = data.get(position).getProvince();
                     province_id = data.get(position).getProvinceId();
 
-                    // Toast.makeText(context, "City: " + city_name + ", ID: " + city_id + ", Province: " + province_name, Toast.LENGTH_SHORT).show();
+//                     Toast.makeText(context, "City: " + city_name + ", ID: " + city_id + ", Province: " + province_name, Toast.LENGTH_LONG).show();
                     switch (((Activity) context).getIntent().getExtras().getInt("requestCode")){
                         case 1:
                             Intent source = new Intent();

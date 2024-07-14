@@ -17,6 +17,15 @@ public class OrderDetailModel {
     private String remember_token;
     private String created_at;
     private String updated_at;
+    private String gambar_barang;
+
+    public String getGambar_barang() {
+        return gambar_barang;
+    }
+
+    public void setGambar_barang(String gambar_barang) {
+        this.gambar_barang = gambar_barang;
+    }
 
     public int getId() {
         return id;
